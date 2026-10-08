@@ -1,0 +1,34 @@
+<?xml version="1.0" ?>
+<PubmedArticleSet>
+ <PubmedArticle>
+  <MedlineCitation>
+   <PMID>99000001</PMID>
+   <Article>
+    <Journal><Title>Test Journal of Oral Health</Title><JournalIssue><PubDate><Year>2026</Year><Month>Sep</Month></PubDate></JournalIssue></Journal>
+    <ArticleTitle>Dental caries among <i>North Korean</i> refugee adolescents: a test record</ArticleTitle>
+    <Abstract><AbstractText Label="BACKGROUND">Synthetic abstract about caries in defectors.</AbstractText><AbstractText Label="RESULTS">More synthetic text.</AbstractText></Abstract>
+    <AuthorList>
+     <Author><LastName>Kim</LastName><Initials>A</Initials></Author>
+     <Author><LastName>Lee</LastName><Initials>B</Initials></Author>
+     <Author><LastName>Park</LastName><Initials>C</Initials></Author>
+     <Author><LastName>Choi</LastName><Initials>D</Initials></Author>
+    </AuthorList>
+    <Language>eng</Language>
+    <ArticleDate DateType="Electronic"><Year>2026</Year><Month>09</Month><Day>21</Day></ArticleDate>
+   </Article>
+  </MedlineCitation>
+  <PubmedData><ArticleIdList><ArticleId IdType="pubmed">99000001</ArticleId><ArticleId IdType="doi">10.0000/TEST.1</ArticleId></ArticleIdList></PubmedData>
+ </PubmedArticle>
+ <PubmedArticle>
+  <MedlineCitation>
+   <PMID>99000002</PMID>
+   <Article>
+    <Journal><Title>Another Journal</Title><JournalIssue><PubDate><Year>2025</Year><Month>Dec</Month><Day>3</Day></PubDate></JournalIssue></Journal>
+    <ArticleTitle>Oral health services in the DPRK</ArticleTitle>
+    <AuthorList><Author><LastName>Han</LastName><Initials>D</Initials></Author></AuthorList>
+    <Language>eng</Language>
+   </Article>
+  </MedlineCitation>
+  <PubmedData><ArticleIdList><ArticleId IdType="pubmed">99000002</ArticleId></ArticleIdList></PubmedData>
+ </PubmedArticle>
+</PubmedArticleSet>

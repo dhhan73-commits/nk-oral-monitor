@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0"><channel><title>Test feed</title>
+<item><title>North Korea expands dental clinics in provinces (test)</title><link>https://example.org/a?utm=1</link><pubDate>Mon, 05 Oct 2026 09:00:00 +0900</pubDate><description>Synthetic report on oral health services in the DPRK.</description></item>
+<item><title>평양 이발관 새 단장 (시험)</title><link>https://example.org/b</link><pubDate>Sun, 04 Oct 2026 09:00:00 +0900</pubDate><description>북한 평양의 이발 서비스 관련 시험 기사.</description></item>
+<item><title>Seoul stock market closes higher (test)</title><link>https://example.org/c</link><pubDate>Sun, 04 Oct 2026 09:00:00 +0900</pubDate><description>Unrelated.</description></item>
+<item><title>North Korea expands dental clinics in provinces (test)</title><link>https://example.org/a</link><pubDate>Mon, 05 Oct 2026 09:00:00 +0900</pubDate><description>Duplicate with different query string.</description></item>
+</channel></rss>

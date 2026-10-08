@@ -1,0 +1,110 @@
+# 북한 치과·구강보건 자료 모니터 설정
+# 이 파일만 고치면 검색어, RSS, 판정 기준을 바꿀 수 있습니다.
+
+# 최근 며칠 치를 수집할지 (매일 실행 기준, 누락 대비 여유를 둠)
+lookback_days: 7
+
+# ---------------------------------------------------------------
+# 1차 키워드 필터: '북한' 쪽 단어와 '구강' 쪽 단어가 모두 있어야 통과
+# 북한식 표기(구강과, 삭은이, 이몸, 이솔, 이닦이약)를 반드시 포함
+# ---------------------------------------------------------------
+keywords:
+  north_korea:
+    - 북한
+    - 탈북
+    - 북향민
+    - 북한이탈주민
+    - 조선민주주의인민공화국
+    - 평양
+    - north korea
+    - dprk
+    - "democratic people's republic of korea"
+    - defector
+    - pyongyang
+  oral:
+    - 치과
+    - 구강
+    - 치아
+    - 충치
+    - 잇몸
+    - 치주
+    - 칫솔
+    - 치약
+    - 구강과
+    - 삭은이
+    - 이몸
+    - 이솔
+    - 이닦이약
+    - 이발
+    - 틀이
+    - dental
+    - dentist
+    - oral health
+    - caries
+    - periodont
+    - tooth
+    - teeth
+    - stomatolog
+    - fluorid
+
+# ---------------------------------------------------------------
+# 수집기 1: PubMed (NCBI E-utilities)
+# ---------------------------------------------------------------
+pubmed:
+  enabled: true
+  query: >-
+    ("Democratic People's Republic of Korea"[MeSH] OR "North Korea*"[tiab]
+    OR DPRK[tiab] OR defector*[tiab] OR "North Korean refugee*"[tiab])
+    AND (dental OR "oral health" OR caries OR periodont* OR stomatolog*
+    OR tooth OR teeth OR "Oral Health"[MeSH] OR "Dentistry"[MeSH])
+  retmax: 100
+  # 연락용 이메일·API 키는 GitHub Secrets(NCBI_EMAIL, NCBI_API_KEY)로 전달
+
+# ---------------------------------------------------------------
+# 수집기 2: 통일부 북한정보포털 (공공데이터포털 오픈API)
+# 활용신청 후 '서비스URL'(End Point + 오퍼레이션 경로)을 아래에 붙여넣으세요.
+# 인증키는 GitHub Secrets의 DATA_GO_KR_KEY로 전달 (Decoding 키 사용)
+# ---------------------------------------------------------------
+unikorea:
+  enabled: true
+  services:
+    - name: 북한정보포털 통합검색
+      # 예: https://apis.data.go.kr/<기관코드>/<서비스명>/<오퍼레이션>
+      endpoint: ""
+      search_keywords: [치과, 구강, 치아, 구강과, 이닦이약]
+    - name: 북한 동향
+      endpoint: ""
+      search_keywords: [치과, 구강, 치아]
+  num_of_rows: 100
+
+# ---------------------------------------------------------------
+# 수집기 3: RSS
+# 국내에서 접속이 차단된 북한 매체 사이트는 넣지 마세요.
+# ---------------------------------------------------------------
+rss:
+  enabled: true
+  feeds:
+    - name: NK News
+      url: https://www.nknews.org/feed/
+    - name: Daily NK (English)
+      url: https://www.dailynk.com/english/feed/
+    - name: 38 North
+      url: https://www.38north.org/feed/
+    - name: Google 뉴스 - 북한 치과
+      url: "https://news.google.com/rss/search?q=%EB%B6%81%ED%95%9C+%EC%B9%98%EA%B3%BC+OR+%EB%B6%81%ED%95%9C+%EA%B5%AC%EA%B0%95&hl=ko&gl=KR&ceid=KR:ko"
+    - name: Google News - North Korea dental
+      url: "https://news.google.com/rss/search?q=%22North+Korea%22+dental+OR+%22oral+health%22&hl=en-US&gl=US&ceid=US:en"
+
+# ---------------------------------------------------------------
+# 2차 판정: Claude
+# ---------------------------------------------------------------
+classifier:
+  enabled: true
+  model: claude-haiku-5-5   # 비용 낮은 모델로 분류. 품질 우선이면 claude-sonnet-5-5
+  min_score: 3              # 1~5점 중 이 점수 이상만 사이트에 게시
+  max_items_per_run: 200    # 1회 실행 시 판정 상한 (비용 보호)
+
+site:
+  title: 북한 구강보건 자료 모니터
+  subtitle: 서울대학교 치의학대학원 통일치의학협력센터
+  output_dir: docs

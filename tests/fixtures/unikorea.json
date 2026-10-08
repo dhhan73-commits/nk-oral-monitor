@@ -1,0 +1,12 @@
+{
+ "response": {
+  "header": {"resultCode": "00", "resultMsg": "NORMAL SERVICE."},
+  "body": {
+   "pageNo": 1, "numOfRows": 10, "totalCount": 2,
+   "items": {"item": [
+    {"nttSj": "북한, 평양 구강병원 시설 현대화 보도", "detailUrl": "https://nkinfo.unikorea.go.kr/test/1", "pstgYmd": "20260930", "cn": "<p>시험용 동향 요약: 구강과 진료 확대.</p>"},
+    {"nttSj": "북한 농업 동향", "detailUrl": "https://nkinfo.unikorea.go.kr/test/2", "pstgYmd": "20260929", "cn": "치과와 무관한 시험 항목."}
+   ]}
+  }
+ }
+}

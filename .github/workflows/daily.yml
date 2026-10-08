@@ -1,0 +1,51 @@
+name: daily-collect
+
+on:
+  schedule:
+    # 매일 한국시간 06:17 (UTC 21:17) — 정각 혼잡을 피해 분 단위를 비틀어 둠
+    - cron: "17 21 * * *"
+  workflow_dispatch: {}   # Actions 탭에서 수동 실행 가능
+
+permissions:
+  contents: write         # data/·docs/ 변경분 커밋
+
+concurrency:
+  group: daily-collect
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Offline tests
+        run: python -m unittest discover -s tests -v
+
+      - name: Collect, classify, build site
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DATA_GO_KR_KEY: ${{ secrets.DATA_GO_KR_KEY }}
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+        run: python run.py
+
+      - name: Commit changes
+        run: |
+          git config user.name "nk-oral-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add data docs
+          if git diff --cached --quiet; then
+            echo "변경 없음"
+          else
+            git commit -m "daily update $(date -u +%Y-%m-%d)"
+            git push
+          fi

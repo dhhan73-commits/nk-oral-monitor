@@ -1,5 +1,6 @@
 name: daily-collect
 
+# Actions 워크플로 등록 트리거용 주석
 on:
   schedule:
     # 매일 한국시간 06:17 (UTC 21:17) — 정각 혼잡을 피해 분 단위를 비틀어 둠

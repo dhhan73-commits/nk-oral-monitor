@@ -9,6 +9,7 @@
 """
 from __future__ import annotations
 
+import itertools
 import os
 import re
 from datetime import date, timedelta
@@ -96,21 +97,28 @@ def collect(cfg: dict, lookback_days: int, log=print) -> list[Item]:
         if not svc.get("endpoint"):
             log(f"[unikorea] '{svc['name']}' endpoint 미설정 → 건너뜀")
             continue
+        extra = svc.get("extra_params") or {}
+        # extra_params의 값이 리스트인 항목은 전부 조합해서 돈다 (예: cl x thema)
+        combo_keys = list(extra.keys())
+        combo_values = [extra[k] if isinstance(extra[k], list) else [extra[k]] for k in combo_keys]
+        combos = list(itertools.product(*combo_values)) if combo_keys else [()]
         for kw in svc.get("search_keywords", [""]):
-            params = {
-                "serviceKey": key, "pageNo": 1, "numOfRows": c.get("num_of_rows", 100),
-                "keyword": kw, "bgng_ymd": bgng, "end_ymd": end,
-                "returnType": "json", "type": "json", "_type": "json",
-            }
-            try:
-                r = requests.get(svc["endpoint"], params=params, timeout=30)
-                r.raise_for_status()
-                payload = r.json()
-            except Exception as e:  # 한 서비스 실패가 전체를 멈추지 않도록
-                log(f"[unikorea] {svc['name']} '{kw}' 실패: {e}")
-                continue
-            recs = find_records(payload)
-            if recs:
-                log(f"[unikorea] {svc['name']} '{kw}': {len(recs)}건, 필드={sorted(recs[0].keys())}")
-            items += to_items(payload, svc["name"], svc.get("field_map"))
+            for combo in combos:
+                params = {
+                    "serviceKey": key, "pageNo": 1, "numOfRows": c.get("num_of_rows", 100),
+                    "keyword": kw, "bgng_ymd": bgng, "end_ymd": end,
+                    "returnType": "json", "type": "json", "_type": "json",
+                }
+                params.update(dict(zip(combo_keys, combo)))
+                try:
+                    r = requests.get(svc["endpoint"], params=params, timeout=30)
+                    r.raise_for_status()
+                    payload = r.json()
+                except Exception as e:  # 한 호출 실패가 전체를 멈추지 않도록
+                    log(f"[unikorea] {svc['name']} '{kw}' {combo} 실패: {e}")
+                    continue
+                recs = find_records(payload)
+                if recs:
+                    log(f"[unikorea] {svc['name']} '{kw}' {combo}: {len(recs)}건, 필드={sorted(recs[0].keys())}")
+                items += to_items(payload, svc["name"], svc.get("field_map"))
     return items

@@ -48,10 +48,27 @@ class Item:
         if self.ids.get("pmid"):
             return "pmid:" + str(self.ids["pmid"])
         if self.url:
-            u = re.sub(r"[?#].*$", "", self.url.strip().lower()).rstrip("/")
+            u = _strip_tracking_params(self.url.strip().lower()).rstrip("/")
             return "url:" + hashlib.sha1(u.encode()).hexdigest()[:16]
         t = re.sub(r"\W+", "", self.title.lower())
         return "title:" + hashlib.sha1(t.encode()).hexdigest()[:16]
+
+
+# 분석용 트래킹 파라미터만 제거. 북한정보포털(trendMngNo 등)처럼 글 식별자가
+# 쿼리스트링에 있는 URL은 그대로 보존해야 중복 제거가 서로 다른 글을 뭉개지 않는다.
+_TRACKING_PARAMS = {
+    "utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "utm",
+    "gclid", "fbclid", "ncid", "ref", "ref_src", "source", "_ga",
+}
+
+
+def _strip_tracking_params(url: str) -> str:
+    url = url.split("#", 1)[0]
+    base, _, query = url.partition("?")
+    if not query:
+        return base
+    kept = [p for p in query.split("&") if p.split("=", 1)[0] not in _TRACKING_PARAMS]
+    return base + ("?" + "&".join(kept) if kept else "")
 
 
 def now_iso() -> str:

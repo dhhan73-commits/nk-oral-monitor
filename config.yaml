@@ -70,12 +70,20 @@ unikorea:
   enabled: true
   services:
     - name: 북한정보포털 통합검색
-      # 예: https://apis.data.go.kr/<기관코드>/<서비스명>/<오퍼레이션>
-      endpoint: ""
+      endpoint: https://apis.data.go.kr/1250000/search/getSearch
       search_keywords: [치과, 구강, 치아, 구강과, 이닦이약]
+      # cl(분류: 개황/동향) x thema(주제: 1정치 2경제 3군사 4사회 5교육문화) 필수 파라미터.
+      # 구강보건은 주로 '사회'에 걸리지만 누락 방지를 위해 전체 주제를 돈다.
+      extra_params:
+        cl: [개황, 동향]
+        thema: ["1", "2", "3", "4", "5"]
     - name: 북한 동향
-      endpoint: ""
-      search_keywords: [치과, 구강, 치아]
+      endpoint: https://apis.data.go.kr/1250000/trend/getTrend
+      # 키워드 서버 필터링 미지원 (cl=기간 분류만 받음) → 다운스트림 키워드 필터에 의존.
+      # 2026-10 테스트 시 기간을 넓게 줘도 0건 — 실제 콘텐츠가 거의 없는 것으로 보임.
+      search_keywords: [""]
+      extra_params:
+        cl: [일일, 주간, 월간]
   num_of_rows: 100
 
 # ---------------------------------------------------------------

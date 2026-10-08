@@ -38,7 +38,7 @@ class FakeClient:
 
 class TestCollectors(unittest.TestCase):
     def test_pubmed_parse(self):
-        items = pubmed.parse_xml((FX / "pubmed.xml").read_text())
+        items = pubmed.parse_xml((FX / "pubmed.xml").read_text(encoding="utf-8"))
         self.assertEqual(len(items), 2)
         a, b = items
         self.assertIn("North Korean", a.title)          # 중첩 태그(<i>) 텍스트 보존
@@ -49,7 +49,7 @@ class TestCollectors(unittest.TestCase):
         self.assertEqual(b.summary, "")
 
     def test_unikorea_parse(self):
-        payload = json.loads((FX / "unikorea.json").read_text())
+        payload = json.loads((FX / "unikorea.json").read_text(encoding="utf-8"))
         items = unikorea.to_items(payload, "통합검색")
         self.assertEqual(len(items), 2)
         self.assertEqual(items[0].published, "2026-09-30")
@@ -82,7 +82,7 @@ class TestPipeline(unittest.TestCase):
 
     def test_classify_filters_false_positive(self):
         items = (rss.parse_feed(str(FX / "feed.xml"), "Test", FAR)
-                 + pubmed.parse_xml((FX / "pubmed.xml").read_text()))
+                 + pubmed.parse_xml((FX / "pubmed.xml").read_text(encoding="utf-8")))
         client = FakeClient()
         classify(merge_new({}, items), self.cfg, client=client, log=lambda *_: None)
         self.assertEqual(client.calls, 4)                # RSS 2 + PubMed 2 (주식 기사는 Claude에 안 보냄)
@@ -92,7 +92,7 @@ class TestPipeline(unittest.TestCase):
             tmp = Path(tmp)
             cfg = dict(self.cfg, site=dict(self.cfg["site"], output_dir=str(tmp / "site")))
             items = merge_new({}, rss.parse_feed(str(FX / "feed.xml"), "Test", FAR)
-                              + pubmed.parse_xml((FX / "pubmed.xml").read_text()))
+                              + pubmed.parse_xml((FX / "pubmed.xml").read_text(encoding="utf-8")))
             classify(items, cfg, client=FakeClient(), log=lambda *_: None)
             store = {i.key: item_to_record(i) for i in items if i.keyword_hit}
             save_store(store, tmp / "items.json")
@@ -100,7 +100,7 @@ class TestPipeline(unittest.TestCase):
             self.assertEqual(len(store2), 4)
             n = build(cfg, store2)
             self.assertEqual(n, 3)                       # '이발' 기사(1점)는 게시 안 됨
-            page = (tmp / "site" / "index.html").read_text()
+            page = (tmp / "site" / "index.html").read_text(encoding="utf-8")
             self.assertIn("Dental caries among North Korean", page)
             self.assertNotIn("이발관", page)
             self.assertNotIn("Synthetic abstract", page)  # 원문 초록은 싣지 않음
@@ -115,7 +115,7 @@ class TestPipeline(unittest.TestCase):
         import os
         old = os.environ.pop("ANTHROPIC_API_KEY", None)
         try:
-            items = pubmed.parse_xml((FX / "pubmed.xml").read_text())
+            items = pubmed.parse_xml((FX / "pubmed.xml").read_text(encoding="utf-8"))
             classify(items, self.cfg, log=lambda *_: None)
             self.assertTrue(all(i.keyword_hit and i.score is None for i in items))
         finally:

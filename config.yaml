@@ -55,8 +55,9 @@ pubmed:
   query: >-
     ("Democratic People's Republic of Korea"[MeSH] OR "North Korea*"[tiab]
     OR DPRK[tiab] OR defector*[tiab] OR "North Korean refugee*"[tiab])
-    AND (dental OR "oral health" OR caries OR periodont* OR stomatolog*
-    OR tooth OR teeth OR "Oral Health"[MeSH] OR "Dentistry"[MeSH])
+    AND (dental[tiab] OR "oral health"[tiab] OR caries[tiab] OR periodont*[tiab]
+    OR stomatolog*[tiab] OR tooth[tiab] OR teeth[tiab] OR "Oral Health"[MeSH]
+    OR "Dentistry"[MeSH])
   retmax: 100
   # 연락용 이메일·API 키는 GitHub Secrets(NCBI_EMAIL, NCBI_API_KEY)로 전달
 
